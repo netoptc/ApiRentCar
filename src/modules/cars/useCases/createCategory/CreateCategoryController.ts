@@ -10,7 +10,7 @@ class CreateCateogryController {
         try {
             await createCategoryUseCase.execute({ name, description });
         } catch (error) {
-            return response.status(500).send();    
+            throw error;    
         }
         return response.status(201).send();
     }

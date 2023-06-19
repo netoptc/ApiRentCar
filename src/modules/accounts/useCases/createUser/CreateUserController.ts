@@ -22,7 +22,7 @@ class CreateUserController {
                 driver_license
             })
         } catch (error) {
-            return response.status(500).send();  
+            throw error;  
         }
         
         return response.status(201).send();
