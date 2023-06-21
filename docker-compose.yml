@@ -24,6 +24,7 @@ services:
       - 9229:9229 #Você pode inserir essa porta tbm pra poder usar o debug
     volumes: 
       - ./src:/usr/app/src
+      - ./tmp:/usr/app/tmp
     links: 
       - database
     depends_on:

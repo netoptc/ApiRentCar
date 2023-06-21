@@ -9,7 +9,6 @@ interface IPayload {
 }
 
 export async function authenticatedMiddleware(request: Request, response: Response, next: NextFunction) {
-    console.log('MIDLA');
     const authHeader = request.headers.authorization;
     if(!authHeader) {
         throw new AppError("Token missing!", 401);
@@ -22,7 +21,10 @@ export async function authenticatedMiddleware(request: Request, response: Respon
         if(!user) {
             throw new AppError("User not exist!", 401);
         }
-        console.log('<==== NEXT');
+        request.user = {
+            id: user_id,
+        }
+
         return next();
 
     } catch {
