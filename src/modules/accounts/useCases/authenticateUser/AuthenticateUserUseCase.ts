@@ -1,8 +1,9 @@
 import { inject, injectable } from "tsyringe";
-import { IUserRepository } from "../../repositories/IUserRepository";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { AppError } from "../../../../errors/AppErros";
+
+import { IUserRepository } from "@modules/accounts/repositories/IUserRepository";
+import { AppError } from "@shared/errors/AppErros";
 
 interface IRequest{
     email: string,

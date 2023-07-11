@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner, TableColumn} from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn } from "typeorm";
 
 export class AlterUserAddColumnAvatar1687220372826 implements MigrationInterface {
 

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../errors/AppErros";
+
+import { AppError } from "@shared/errors/AppErros";
 
 export function errorMiddleware(err: Error, request: Request, response: Response, next: NextFunction) {
     if (err instanceof AppError) {

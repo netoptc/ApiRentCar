@@ -1,5 +1,5 @@
-import { User } from "../../entities/User";
-import { ICreateUserDTO, IUserRepository } from "../IUserRepository";
+import { User } from "@modules/accounts/infra/typeorm/entities/User";
+import { ICreateUserDTO, IUserRepository } from "@modules/accounts/repositories/IUserRepository";
 
 class UserRepositoryInMemory implements IUserRepository{
     private users: User[] = []
