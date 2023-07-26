@@ -38,7 +38,7 @@ describe("Authenticate User", () => {
                 email: 'noexist@email',
                 password: 'noexist',
             });
-        }).rejects.toBeInstanceOf(AppError)
+        }).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to authenticate with incorrect password", () => {
