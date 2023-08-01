@@ -1,8 +1,10 @@
-import { Column, CreateDateColumn, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, CreateDateColumn, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { v4 as uuidV4 } from "uuid"
 import { Category } from "./Category";
-export class Car {
-    @Column()
+
+@Entity("cars")
+class Car {
+    @PrimaryColumn()
     id: string;
     
     @Column()
@@ -45,3 +47,4 @@ export class Car {
     }
 }   
 
+export { Car };

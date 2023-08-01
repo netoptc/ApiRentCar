@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { inject, injectable } from "tsyringe";
 
 import { Car } from "@modules/cars/infra/typeorm/entities/Car";
@@ -18,7 +19,7 @@ interface IRequest {
 @injectable()
 export class CreateCarUseCase {
     constructor(
-        @inject("CategoryRepository")
+        @inject("CarRepository")
         private carRepository: ICarRepository
     ) {}
     
