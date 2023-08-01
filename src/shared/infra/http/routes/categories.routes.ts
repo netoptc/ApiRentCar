@@ -5,6 +5,7 @@ import { CreateCateogryController } from "@modules/cars/useCases/createCategory/
 import { ImportCategoryController } from "@modules/cars/useCases/importCategory/ImportCategoryController";
 import { ListCategoryController } from "@modules/cars/useCases/listCategory/ListCategoryController";
 import { authenticatedMiddleware } from "@shared/infra/http/middlewares/authenticatedMiddleware";
+import { userAdminMiddleware } from "../middlewares/userAdminMiddleware";
 
 const categoriesRoutes = Router();
 
@@ -18,8 +19,8 @@ const listCategoryController = new ListCategoryController();
 
 categoriesRoutes.use(authenticatedMiddleware);
 
-categoriesRoutes.post("/", createCateogryController.handle);
+categoriesRoutes.post("/", userAdminMiddleware, createCateogryController.handle);
 categoriesRoutes.get("/", listCategoryController.handle);
-categoriesRoutes.post("/import", upload.single("file"), importCategoryController.handle);
+categoriesRoutes.post("/import", userAdminMiddleware, upload.single("file"), importCategoryController.handle);
 
 export { categoriesRoutes };
