@@ -5,12 +5,14 @@ import swaggerUi from "swagger-ui-express";
 import "express-async-errors";
 
 import swaggerFile from "../../../swagger.json";
-import "@shared/infra/typeorm";
+import createConnection from "@shared/infra/typeorm/index";
 import "@shared/container";
 
 import { router } from "./routes";
 import { errorMiddleware } from "@shared/infra/http/middlewares/errorMiddleware";
 
+
+createConnection()
 const app = express();
 
 app.use(express.json());
