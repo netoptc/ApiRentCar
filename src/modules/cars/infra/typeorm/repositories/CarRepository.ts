@@ -9,6 +9,7 @@ class CarRepository implements ICarRepository{
     constructor () {
         this.repository = getRepository(Car)
     }
+
     async create({ name, description, daily_rate, license_plate, fine_amount, brand, category_id }: ICreateCarDTO): Promise<Car> {
         const car = this.repository.create({
             name, 
@@ -31,6 +32,9 @@ class CarRepository implements ICarRepository{
         return car;
     }
 
+    async findAvailable(category_id?: string, brand?: string, name?: string): Promise<Car[]> {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export { CarRepository }
