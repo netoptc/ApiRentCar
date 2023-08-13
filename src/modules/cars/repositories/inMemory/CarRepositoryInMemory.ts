@@ -3,9 +3,9 @@ import { ICarRepository } from "../ICarRepository";
 import { Car } from "@modules/cars/infra/typeorm/entities/Car";
 
 export class CarRepositoryInMemory implements ICarRepository {
-    cars: Car[] = [];
+    private cars: Car[] = [];
     
-    async create({ name, description, daily_rate, license_plate, fine_amount, brand, category_id }: ICreateCarDTO): Promise<Car> {
+    async create({ name, description, daily_rate, license_plate, fine_amount, brand, category_id, specifications }: ICreateCarDTO): Promise<Car> {
         const car = new Car()
         
         Object.assign(car, {
@@ -15,7 +15,8 @@ export class CarRepositoryInMemory implements ICarRepository {
             license_plate, 
             fine_amount, 
             brand, 
-            category_id
+            category_id,
+            specifications,
         })
         this.cars.push(car);
         
@@ -41,4 +42,9 @@ export class CarRepositoryInMemory implements ICarRepository {
 
         return cars;
     }
+
+    async findById(id: string): Promise<Car> {
+        return this.cars.find((car) => car.id === id);
+    }
+
 }
