@@ -1,10 +1,14 @@
 import { AppError } from "@shared/errors/AppErros";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
 import { ICreateRental, IRentalRepository } from "../repositories/IRentalRepository";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 class CreateRentalUseCase {
     constructor(
+        @inject("RentalRepository")
         private rentalRepository: IRentalRepository,
+        @inject("DayjsDateProvider")
         private dateProvider: IDateProvider,
     ) {}
     
