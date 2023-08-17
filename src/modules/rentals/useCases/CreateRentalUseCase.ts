@@ -1,14 +1,11 @@
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"
-
 import { AppError } from "@shared/errors/AppErros";
+import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
 import { ICreateRental, IRentalRepository } from "../repositories/IRentalRepository";
-
-dayjs.extend(utc);
 
 class CreateRentalUseCase {
     constructor(
-        private rentalRepository: IRentalRepository
+        private rentalRepository: IRentalRepository,
+        private dateProvider: IDateProvider,
     ) {}
     
     async execute({
@@ -29,10 +26,9 @@ class CreateRentalUseCase {
         throw new AppError('Already exist a rental to this user');
         }
 
-        const expectedReturnDateFormat = dayjs(expected_return_date).utc().local().format()
-        const dateNowFormat = dayjs().utc().local().format() 
+        const dateNow = this.dateProvider.dateNow()
 
-        const compare = dayjs(expectedReturnDateFormat).diff(dateNowFormat, "hours")
+        const compare = this.dateProvider.compareInHours(dateNow, expected_return_date);
 
         if (compare <= minimunHour) {
             throw new AppError("Invalid return time");
