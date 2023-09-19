@@ -1,59 +1,88 @@
-import { inject, injectable } from "tsyringe";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
+import { inject, injectable } from "tsyringe";
 
+import auth from "@config/auth";
 import { IUserRepository } from "@modules/accounts/repositories/IUserRepository";
+import { IUserTokensRepository } from "@modules/accounts/repositories/IUserTokensReposito";
+import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
 import { AppError } from "@shared/errors/AppErros";
 
-interface IRequest{
-    email: string,
-    password: string,
+interface IRequest {
+  email: string;
+  password: string;
 }
 interface IResponse {
-    user: {
-        name: string,
-        email: string,
-    },
-    token: string,
+  user: {
+    name: string;
+    email: string;
+  };
+  token: string;
+  refresh_token: string;
 }
-
 
 @injectable()
-class AuthenticateUserUseCase { 
-    constructor(
-        @inject("UserRepository")
-        private userRepository: IUserRepository
-    ) {}
-    async execute({email, password}: IRequest): Promise<IResponse> {
+class AuthenticateUserUseCase {
+  constructor(
+    @inject("UserRepository")
+    private userRepository: IUserRepository,
+    @inject("UserTokensRepository")
+    private userTokensRepository: IUserTokensRepository,
+    @inject("DayjsDateProvider")
+    private dateProvider: IDateProvider
+  ) {}
+  async execute({ email, password }: IRequest): Promise<IResponse> {
+    const {
+      secret_token,
+      expires_in_token,
+      secret_refresh_token,
+      expires_in_refresh_token,
+      expires_refresh_token_days,
+    } = auth;
 
-        const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
 
-        if (!user) {
-            throw new AppError('Email or password incorrect');
-        }
-
-        const passwordMatch = await compare(password, user.password);
-
-        if (!passwordMatch) {
-            throw new AppError('Email or password incorrect');
-        }
-
-        const token = sign({}, 'a621282f4d01b474716eedd7c94a14d6', {
-            subject: user.id,
-            expiresIn: '1d'
-        });
-        
-        const tokenResponse = {
-            user: { 
-                name: user.name,
-                email: user.email,
-            },
-            token
-        }
-        
-        return tokenResponse;
-
+    if (!user) {
+      throw new AppError("Email or password incorrect");
     }
+
+    const passwordMatch = await compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw new AppError("Email or password incorrect");
+    }
+
+    const token = sign({}, secret_token, {
+      subject: user.id,
+      expiresIn: expires_in_token,
+    });
+
+    const refresh_token = sign({}, secret_refresh_token, {
+      subject: user.id,
+      expiresIn: expires_in_refresh_token,
+    });
+
+    const refresh_token_expires_date = this.dateProvider.addDays(
+      expires_refresh_token_days
+    );
+
+    await this.userTokensRepository.create({
+      user_id: user.id,
+      refresh_token,
+      expires_date: refresh_token_expires_date,
+    });
+
+    const response = {
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+      token,
+      refresh_token,
+    };
+
+    return response;
+  }
 }
 
-export { AuthenticateUserUseCase };  
+export { AuthenticateUserUseCase };
